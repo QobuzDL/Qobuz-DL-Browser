@@ -1,0 +1,134 @@
+<html lang="en">
+
+<head>
+    <meta name="darkreader-lock">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qobuz-DL</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script> 
+    <script src="{{url_for('static',filename='js/zip.min.js')}}"></script>
+</head>
+
+<body class="bg-background flex flex-col items-center p-6 gap-4">
+    <div data-content="downloadMenu"
+        class="fixed md:bg-zinc-900/70 w-auto h-screen top-0 left-0 right-0 z-[100] flex items-stretch p-6 md:p-0 transition-all ease-in-out delay-100 hidden overflow-hidden">
+        <div class="w-full h-full absolute top-0 left-0 z-[105] downloadManagePane"></div>
+        <div class="bg-zinc-800 text-white w-full md:w-[650px] flex flex-col items-center p-2 rounded-[16px] md:rounded-none gap-2 z-[110] transition-all ease-in-out delay-300"
+            style="left: 0px;">
+            <div class="flex w-full items-center justify-end">
+                <button data-button="closeDownloadMenu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-white" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+            <h1 class="text-3xl font-medium">Download Queue</h1>
+            <div data-content="downloadMenuDownloads"
+                class="w-full flex flex-col items-center gap-2 h-full overflow-y-auto scroll-smooth">
+                <div data-no-content="downloadMenuDownloads" class="w-full flex items-center justify-center h-full">
+                    <p class="md:text-2xl text-xl text-center text-wrap text-muted">No music currently downloading.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-mobile="mobileBlackScreen"
+        class="fixed w-screen h-screen top-0 left-0 bg-zinc-900/70 z-[50] transition-all ease-in-out delay-200 hidden md:hidden">
+    </div>
+    <header class="w-screen flex justify-center fixed z-[1] bg-zinc-800 top-0 flex-col">
+        <div class="flex items-center w-full px-6 py-3">
+            <div class="flex items-cetner justify-start gap-4 md:gap-6">
+                <a
+                    href="/"
+                    class="absolute h-full top-0 left-1/2 transform -translate-x-1/2 flex items-center justify-center text-white text-2xl font-semibold text-nowrap">
+                    Qobuz-DL
+                </a>
+                <button data-button="downloadMenu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        class="stroke-white w-5 md:scale-[1.2] md:hover:scale-[1.4] transition-all z-[1]" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-hard-drive-download">
+                        <path d="M12 2v8" />
+                        <path d="m16 6-4 4-4-4" />
+                        <rect width="20" height="8" x="2" y="14" rx="2" />
+                        <path d="M6 18h.01" />
+                        <path d="M10 18h.01" />
+                    </svg>
+                </button>
+                <button data-button="settingsMenu" hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        class="stroke-white md:scale-[1.2] md:hover:scale-[1.4] transition-all z-[1]" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-settings">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+            </div>
+            <div class="w-full flex items-center justify-end gap-4 md:gap-6">
+                <a href="https://rentry.org/firehawk52#qobuz-tokens" title="Thank you to Firehawk52 for the Qobuz tokens!">
+                    <svg class="stroke-white md:scale-[1.2] md:hover:scale-[1.4] w-5 transition-all z-[1]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bird"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg>
+                </a>
+                <button data-button="github">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="stroke-white md:scale-[1.2] md:hover:scale-[1.4] w-5 transition-all z-[1]" width="24"
+                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github">
+                        <path
+                            d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                        <path d="M9 18c-4.51 2-5-2-7-2" />
+                    </svg>
+                </button>
+                <button data-button="discord">
+                    <svg width="24" height="24"
+                        class="stroke-white md:scale-[1.2] w-6 md:hover:scale-[1.4] transition-all z-[1]"
+                        viewBox="0 0 192 192" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" fill="none">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="12"
+                            d="m68 138-8 16c-10.19-4.246-20.742-8.492-31.96-15.8-3.912-2.549-6.284-6.88-6.378-11.548-.488-23.964 5.134-48.056 19.369-73.528 1.863-3.334 4.967-5.778 8.567-7.056C58.186 43.02 64.016 40.664 74 39l6 11s6-2 16-2 16 2 16 2l6-11c9.984 1.664 15.814 4.02 24.402 7.068 3.6 1.278 6.704 3.722 8.567 7.056 14.235 25.472 19.857 49.564 19.37 73.528-.095 4.668-2.467 8.999-6.379 11.548-11.218 7.308-21.769 11.554-31.96 15.8l-8-16m-68-8s20 10 40 10 40-10 40-10" />
+                        <ellipse cx="71" cy="101" fill="#FFFFFF" rx="13" ry="15" />
+                        <ellipse cx="121" cy="101" fill="#FFFFFF" rx="13" ry="15" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="w-full h-0.5 bg-muted opacity-40 rounded-full"></div>
+    </header>
+    <h1 class="text-white text-3xl md:text-5xl text-center mt-14 mb-4">Search for any release</h1>
+    <search-bar class="bg-primary w-full rounded-[24px] p-4 md:p-6 flex gap-2">
+        <search-icon>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M4.59858 24.3796L4.59824 24.3793C3.29897 23.0811 2.26831 21.5397 1.56512 19.8431C0.861931 18.1466 0.5 16.3282 0.5 14.4918C0.5 12.6554 0.861931 10.8369 1.56512 9.1404C2.26831 7.44387 3.29897 5.90245 4.59824 4.60422L4.5987 4.60377C7.1132 2.0848 10.4942 0.619588 14.0522 0.507003C17.6102 0.394417 21.0772 1.64294 23.746 3.9979C26.4148 6.35286 28.0845 9.63686 28.4145 13.1801C28.7446 16.7234 27.7102 20.2592 25.5222 23.0662L25.2505 23.4148L25.5631 23.7272L35.1376 33.2989C35.3728 33.5439 35.5029 33.8712 35.5 34.2108C35.497 34.5517 35.3602 34.8779 35.119 35.119C34.8778 35.3602 34.5514 35.497 34.2103 35.5C33.8704 35.5029 33.5429 35.3728 33.2978 35.1375L23.7234 25.5659L23.411 25.2536L23.0626 25.5251C20.3752 27.6195 17.0145 28.6591 13.6136 28.4481C10.2126 28.2371 7.00629 26.7901 4.59858 24.3796ZM13.3714 3.16813C11.1338 3.38846 9.0206 4.26514 7.29148 5.67535V5.59465L6.43903 6.44178C5.37734 7.49684 4.53579 8.7522 3.96323 10.135C3.39078 11.5175 3.0986 13 3.10366 14.4963C3.10425 17.1289 4.01777 19.6798 5.68861 21.7146C7.35961 23.7496 9.68469 25.1424 12.2677 25.6557C14.8507 26.1691 17.5318 25.7712 19.8543 24.5299C22.1768 23.2886 23.9969 21.2807 25.0046 18.8481C26.0123 16.4156 26.1451 13.7091 25.3805 11.1896C24.6159 8.67013 23.0011 6.49368 20.8113 5.03104C18.6215 3.5684 15.9922 2.91005 13.3714 3.16813Z"
+                    fill="black" stroke="black" />
+            </svg>
+        </search-icon>
+        <input class="w-full ml-3 flex items-center outline-none bg-primary text-2xl" type="search">
+    </search-bar>
+    <div class="w-full flex justify-start px-2 gap-4">
+        <button data-button="toggleAlbums" class="w-full md:w-40 bg-gradient p-1 rounded-md" disabled>
+            Albums
+        </button>
+        <button data-button="toggleTracks" class="w-full md:w-40 bg-secondary p-1 rounded-md" disabled>
+            Tracks
+        </button>
+    </div>
+    <div data-content="releaseList" class="w-full flex flex-col gap-4">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.9.7/dist/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="{{url_for('static',filename='js/base.js')}}"></script>
+</body>
+
+</html>
