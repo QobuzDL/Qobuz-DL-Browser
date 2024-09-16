@@ -76,15 +76,10 @@ class QobuzDL {
             </button>
         `
         document.querySelector("[data-button='discord']").addEventListener("click", () => {
-            this.notyf.error({
-                message: "Discord server coming soon!", 
-                dismissible: true,
-                ripple: true,
-                duration: 3000
-            });
+            window.location = "https://discord.gg/mWQ6bCfkfA";
         });
         document.querySelector("[data-button='github']").addEventListener("click", () => {
-            window.location = "https://github.com/FarmzDev/Qobuz-DL-Browser";
+            window.location = "https://github.com/QobuzDL/Qobuz-DL-Browser";
         })
 
         document.querySelector(".downloadManagePane").addEventListener("click", () => {
