@@ -204,7 +204,7 @@ class QobuzDL {
 
     async testCorsProxy () {
         try {
-            const response = await fetch(`https://corsproxy.io/?https://httpbin.org/status/200`);
+            const response = await fetch(`https://corsproxy.io/?url=https://httpbin.org/status/200`);
             if ((response.ok) && ((await response.text()) === "")) {
                 return true;
             }
@@ -876,14 +876,14 @@ class QobuzDL {
                 new RegExp(`name:"\\w+/(?<timezone>${timezones})",info:"(?<info>[\\w=]+)",extras:"(?<extras>[\\w=]+)"`, 'g');
             const appIdRegex = /production:{api:{appId:"(?<app_id>\d{9})",appSecret:"(\w{32})/;
         
-            const response = await fetch(`https://corsproxy.io/?${encodeURIComponent("https://play.qobuz.com/login")}`);
+            const response = await fetch(`https://corsproxy.io/?url=${encodeURIComponent("https://play.qobuz.com/login")}`);
             const loginPage = await response.text();
         
             const bundleUrlMatch = loginPage.match(/<script src="(\/resources\/\d+\.\d+\.\d+-[a-z]\d{3}\/bundle\.js)"><\/script>/);
             if (!bundleUrlMatch) throw new Error("Could not find bundle URL.");
             const bundleUrl = bundleUrlMatch[1];
 
-            const bundleResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent("https://play.qobuz.com" + bundleUrl)}`);
+            const bundleResponse = await fetch(`https://corsproxy.io/?url=${encodeURIComponent("https://play.qobuz.com" + bundleUrl)}`);
             const bundle = await bundleResponse.text();
         
             const appIdMatch = bundle.match(appIdRegex);
