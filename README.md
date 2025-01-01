@@ -1,3 +1,7 @@
+> [!WARNING]
+> This repository has been discontinued in favor of a [new version](https://github.com/QobuzDL/Qobuz-DL/).
+> This repository is in turn no longer supported and will not be updated.
+
 # Qobuz-DL-Browser
 
 A static web application for downloading music from [Qobuz](https://www.qobuz.com/), supporting audio qualities up to 24-bit / 192kHz FLAC.
